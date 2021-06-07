@@ -5,18 +5,97 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    
-    <script src="https://kit.fontawesome.com/18f64a2eae.js" crossorigin="anonymous"></script>
-    
-    <title>Calender</title>
+    <title>calender OOPS</title>
 </head>
 
 <body>
-  
 
+    <script>
+        var cal_days_labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    <script src="main.js"></script>
+        var cal_months_labels = ['January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August', 'September',
+            'October', 'November', 'December'];
+
+        var cal_days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+        var cal_current_date = new Date();
+
+        function Calendar(month, year) {
+            this.month = (isNaN(month) || month == null) ? cal_current_date.getMonth() : month;
+            this.year = (isNaN(year) || year == null) ? cal_current_date.getFullYear() : year;
+            this.html = '';
+        }
+
+        Calendar.prototype.generateHTML = function () {
+            // get first day of month
+            var firstDay = new Date(this.year, this.month, 1);
+            var startingDay = firstDay.getDay();
+
+            // number of days in month
+            var monthLength = cal_days_in_month[this.month];
+
+            // for leap year
+            if (this.month == 1) { // February only!
+                if ((this.year % 4 == 0 && this.year % 100 != 0) || this.year % 400 == 0) {
+                    monthLength = 29;
+                }
+            }
+
+            // header
+            var monthName = cal_months_labels[this.month];
+            var html = '<table class="calendar-table">';
+            html += '<tr><th colspan="7">';
+            html += monthName + "&nbsp;" + this.year;
+            html += '</th></tr>';
+            html += '<tr class="calendar-header">';
+            for (var i = 0; i <= 6; i++) {
+                html += '<td class="calendar-header-day">';
+                html += cal_days_labels[i];
+                html += '</td>';
+            }
+            html += '</tr><tr>';
+
+            // fill in the days
+            var day = 1;
+            // this loop is for is weeks (rows)
+            for (var y = 0; y < 9; y++) {
+                // this loop is for weekdays (cells)
+                for (var j = 0; j <= 6; j++) {
+                    html += '<td class="calendar-day">';
+                    if (day <= monthLength && (y > 0 || j >= startingDay)) {
+                        html += day;
+                        day++;
+                    }
+                    html += '</td>';
+                }
+                // stop making rows if we've run out of days
+                if (day > monthLength) {
+                    break;
+                } else {
+                    html += '</tr><tr>';
+                }
+            }
+            html += '</tr></table>';
+
+            this.html = html;
+            // set: function (html) {
+            //     this.firstName = html;
+            // }
+
+            // return html;
+        }
+
+        Calendar.prototype.getHTML = function () {
+            return this.html;
+        }
+
+        var cal = new Calendar(1, 2021);
+        cal.generateHTML();
+        document.write(cal.getHTML());
+
+    </script>
+
 
 </body>
 
